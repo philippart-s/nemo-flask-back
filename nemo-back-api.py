@@ -1,3 +1,4 @@
+from urllib import response
 from flask import Flask, request, jsonify
 import flask
 
@@ -13,26 +14,22 @@ from keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 
+import soundfile as sf
 
-# transform the sound into a csv file
-# Parameters:
-#  - sound_saved : the binary file saved for a sound
+# Transform the sound into a csv file.
+# The sound is read from the global variable sended_sound
 # Return: The builded dataset with the given sound
-def build_dataset(sound_saved: str):  
+def build_dataframe():  
   # define the column names
   headers = 'filename length chroma_stft_mean chroma_stft_var rms_mean rms_var spectral_centroid_mean spectral_centroid_var spectral_bandwidth_mean \
       spectral_bandwidth_var rolloff_mean rolloff_var zero_crossing_rate_mean zero_crossing_rate_var harmony_mean harmony_var perceptr_mean perceptr_var tempo mfcc1_mean mfcc1_var mfcc2_mean \
-      mfcc2_var mfcc3_mean mfcc3_var mfcc4_mean mfcc4_var'.split()
-  
-  # create the csv file
-  file = open(f'csv_files/{os.path.splitext(sound_saved)[0]}.csv', 'w', newline = '')
-  with file:
-      writer = csv.writer(file)
-      writer.writerow(headers)
-      
+      mfcc2_var mfcc3_mean mfcc3_var mfcc4_mean mfcc4_var\n'
+
   # calculate the value of the librosa parameters
-  sound_name = f'audio_files/{sound_saved}'
-  audio_time_series, sampling_rate = librosa.load(sound_name, mono = True, duration = 30)
+  audio_time_series, sampling_rate_ori = sf.read(io.BytesIO(sended_sound))
+  # Resampling to use the same samplingrate that the model use for training
+  sampling_rate = 22050
+  audio_time_series = librosa.resample(audio_time_series, sampling_rate_ori, sampling_rate)
   chroma_stft = librosa.feature.chroma_stft(y = audio_time_series, sr = sampling_rate)
   rmse = librosa.feature.rms(y = audio_time_series)
   spec_cent = librosa.feature.spectral_centroid(y = audio_time_series, sr = sampling_rate)
@@ -40,44 +37,38 @@ def build_dataset(sound_saved: str):
   rolloff = librosa.feature.spectral_rolloff(y = audio_time_series, sr = sampling_rate)
   zcr = librosa.feature.zero_crossing_rate(audio_time_series)
   mfcc = librosa.feature.mfcc(y = audio_time_series, sr = sampling_rate)
-  to_append = f'{os.path.basename(sound_name)} {np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
+  to_append = f'uploaded-sound {np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
   for e in mfcc:
       to_append += f' {np.mean(e)}'
   
-  # fill in the csv file
-  file = open(f'csv_files/{os.path.splitext(sound_saved)[0]}.csv', 'a', newline = '')
-  with file:
-      writer = csv.writer(file)
-      writer.writerow(to_append.split())
-  
   # Return the dataset
-  dataset = pandas.read_csv(f'csv_files/{os.path.splitext(sound_saved)[0]}.csv')
-  
-  return dataset
+  in_memory_csv = headers + to_append
+  dataframe = pandas.read_csv(io.StringIO(in_memory_csv), sep=" ")
+
+  return dataframe
 
 
-# Classify the uploded sounds trensformed in a CSV format compatible.
-def classification(sound_name: str):
-  # Label to display the founded marine mammal
-  """ labels = "AtlanticSpottedDolphin\nBeardedSeal\nBeluga_WhiteWhale\nBlueWhale\nBottlenoseDolphin\nBoutu_AmazonRiverDolphin\nBowheadWhale\nClymeneDolphin\n\
+# Try to predict the kind of marine mammal from the uploaded sound.
+def predict():
+  labels = "AtlanticSpottedDolphin\nBeardedSeal\nBeluga_WhiteWhale\nBlueWhale\nBottlenoseDolphin\nBoutu_AmazonRiverDolphin\nBowheadWhale\nClymeneDolphin\n\
 Commerson'sDolphin\nCommonDolphin\nDall'sPorpoise\nDuskyDolphin\nFalseKillerWhale\nFin_FinbackWhale\nFinlessPorpoise\nFraser'sDolphin\nGrampus_Risso'sDolphin\n\
 GraySeal\nGrayWhale\nHarborPorpoise\nHarbourSeal\nHarpSeal\nHeaviside'sDolphin\nHoodedSeal\nHumpbackWhale\nIrawaddyDolphin\nJuanFernandezFurSeal\nKillerWhale\n\
 LeopardSeal\nLong_FinnedPilotWhale\nLongBeaked(Pacific)CommonDolphin\nMelonHeadedWhale\nMinkeWhale\nNarwhal\nNewZealandFurSeal\nNorthernRightWhale\n\
-PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphin\nSeaOtter\nShort_Finned(Pacific)PilotWhale\nSouthernRightWhale\nSpermWhale" """
+PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphin\nSeaOtter\nShort_Finned(Pacific)PilotWhale\nSouthernRightWhale\nSpermWhale"
 
-  dataframe = build_dataset(sound_name)
+  # Build the dataframe from the sound
+  dataframe = build_dataframe()
 
-  #df_test = pandas.read_csv(io.StringIO(labels), sep=",", header=None)
-
-  df = pandas.read_csv('csv_files/data.csv')
+  df_labels = pandas.read_csv(io.StringIO(labels), header=None)
 
   # encode the labels (0 => 44)
   converter = LabelEncoder()
-  converter.fit_transform(df.iloc[:,-1])
+  converter.fit_transform(df_labels.iloc[:,-1])
   
   # INPUTS: all other columns are inputs except the filename
   scaler = StandardScaler()
   # Pourquoi a-t-on besoin des datas ayant servi à faire l’entraînement ?
+  df = pandas.read_csv('csv_files/data.csv')
   scaler.fit(np.array(df.iloc[:, 1:27]))
   x = scaler.transform(np.array(dataframe.iloc[:, 1:27]))
 
@@ -99,22 +90,21 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
 app = Flask(__name__)
 ## End-point to get the animal name from its sound
 @app.route('/get-animal-name', methods=['GET'])
-def GetMarineMammal():
+def guess_mammal_marine_from_sound():
 
-  sound_name = request.args.get('sound_name')
-  print(sound_name)
-  response = classification(sound_name + ".wav")
+  request.args.get('sound_name')
+  response = predict()
 
   return jsonify({'animal': response[0]})
 
 ## End-point to get the animal name from its sound
 @app.route('/send-sound', methods=['POST'])
-def UploadSound():
+def upload_mammal_marine_sound():
 
-  with open(os.path.join('audio_files/', 'sound-uploaded.wav'),'wb') as f:
-         f.write(request.get_data())
+  global sended_sound 
+  sended_sound = request.get_data()
 
-  return jsonify({'file-name': 'sound-uploaded.wav'})
+  return "ok"
 
 
 ## Main entry
