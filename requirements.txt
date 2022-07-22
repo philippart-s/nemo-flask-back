@@ -1,0 +1,7 @@
+tensorflow
+flask
+librosa
+numpy
+pandas
+sklearn
+keras

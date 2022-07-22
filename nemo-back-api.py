@@ -71,12 +71,14 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
   df = pandas.read_csv('csv_files/data.csv')
   scaler.fit(np.array(df.iloc[:, 1:27]))
   x = scaler.transform(np.array(dataframe.iloc[:, 1:27]))
+  print(type(x))
 
   # load the pretrained model
   model = load_model('saved_model/my_model')
   
   # generate predictions for test samples
-  predictions = model.predict(x)
+  # predictions = model.predict(x)
+  predictions = model(x)
   
   # generate argmax for predictions
   classes = np.argmax(predictions, axis = 1)
