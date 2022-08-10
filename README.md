@@ -8,7 +8,7 @@ Source code in Python using flask for the Nemo's back-end
     
 ## OVHcloud :
 
-  - lancement : `ovhai app run --unsecure-http --gpu 1 -p 8080 wilda/nemo-back-end:1.0.0`
+  - lancement : ` ovhai app run --name nemo-back-end --unsecure-http --gpu 1 -p 8080 --volume nemo-data@GRA/:/workspace/data:RW:cache -e DATA_PATH=/workspace/data wilda/nemo-back-end:1.1.0`
 
 ## End-Points
 
