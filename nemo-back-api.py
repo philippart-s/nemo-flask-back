@@ -1,12 +1,9 @@
-from urllib import response
 from flask import Flask, request, jsonify
-import flask
 
 import os
 import librosa
 import numpy as np
 import pandas
-import csv
 
 import io
 
@@ -68,13 +65,12 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
   # INPUTS: all other columns are inputs except the filename
   scaler = StandardScaler()
   # Pourquoi a-t-on besoin des datas ayant servi à faire l’entraînement ?
-  df = pandas.read_csv('csv_files/data.csv')
+  df = pandas.read_csv(data_path + '/data.csv')
   scaler.fit(np.array(df.iloc[:, 1:27]))
   x = scaler.transform(np.array(dataframe.iloc[:, 1:27]))
-  print(type(x))
 
   # load the pretrained model
-  model = load_model('saved_model/my_model')
+  model = load_model(data_path + '/ai-model/model-marine-mammal-sounds-classification')
   
   # generate predictions for test samples
   # predictions = model.predict(x)
@@ -94,7 +90,12 @@ app = Flask(__name__)
 @app.route('/get-animal-name', methods=['GET'])
 def guess_mammal_marine_from_sound():
 
-  request.args.get('sound_name')
+  # Gest th path for date (compute date and saveed model), by default us the date in the local source tree
+  global data_path 
+  data_path = './data'
+  if (os.environ.get("DATA_PATH")):
+    data_path = os.environ.get("DATA_PATH")  
+  
   response = predict()
 
   return jsonify({'animal': response[0]})
