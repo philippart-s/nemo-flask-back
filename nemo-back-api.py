@@ -96,7 +96,6 @@ def guess_mammal_marine_from_sound():
   if (os.environ.get("DATA_PATH")):
     data_path = os.environ.get("DATA_PATH")  
   
-  #request.args.get('sound_name')
   response = predict()
 
   return jsonify({'animal': response[0]})
