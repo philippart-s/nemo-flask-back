@@ -65,12 +65,12 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
   # INPUTS: all other columns are inputs except the filename
   scaler = StandardScaler()
   # Pourquoi a-t-on besoin des datas ayant servi à faire l’entraînement ?
-  df = pandas.read_csv('data/data.csv')
+  df = pandas.read_csv(data_path + '/data.csv')
   scaler.fit(np.array(df.iloc[:, 1:27]))
   x = scaler.transform(np.array(dataframe.iloc[:, 1:27]))
 
   # load the pretrained model
-  model = load_model('data/ai-model/model-marine-mammal-sounds-classification')
+  model = load_model(data_path + '/ai-model/model-marine-mammal-sounds-classification')
   
   # generate predictions for test samples
   # predictions = model.predict(x)
