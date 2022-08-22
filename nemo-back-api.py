@@ -64,7 +64,6 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
   
   # INPUTS: all other columns are inputs except the filename
   scaler = StandardScaler()
-  # Pourquoi a-t-on besoin des datas ayant servi à faire l’entraînement ?
   df = pandas.read_csv(data_path + '/data.csv')
   scaler.fit(np.array(df.iloc[:, 1:27]))
   x = scaler.transform(np.array(dataframe.iloc[:, 1:27]))
@@ -72,8 +71,7 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
   # load the pretrained model
   model = load_model(data_path + '/ai-model/model-marine-mammal-sounds-classification')
   
-  # generate predictions for test samples
-  # predictions = model.predict(x)
+  # generate prediction
   predictions = model(x)
   
   # generate argmax for predictions
@@ -90,7 +88,7 @@ app = Flask(__name__)
 @app.route('/get-animal-name', methods=['GET'])
 def guess_mammal_marine_from_sound():
 
-  # Gest th path for date (compute date and saveed model), by default us the date in the local source tree
+  # Gest the path for date (compute date and saveed model), by default us the date in the local source tree
   global data_path 
   data_path = './data'
   if (os.environ.get("DATA_PATH")):
