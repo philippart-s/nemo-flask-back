@@ -26,6 +26,7 @@ Source code in Python using flask for the Nemo's back-end
     - create / update the following environment variables:
         - `export DATA_PATH=<path to the data, data for example (default if no car is set)>`
         - `export PATH=$PATH:/Users/stef/Library/Python/3.8/bin`
+    - run `python3 nemo-back-api.py`
 
 ## End-Points
 

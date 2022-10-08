@@ -1,0 +1,6 @@
+image:
+  file: .gitpod.Dockerfile
+  
+tasks:
+  - init: pip install -r requirements.txt
+    command: ovhai login --username $OVH_OPENSTACK_USER --password $OVH_OPENSTACK_PASSWORD && python3 nemo-back-api.py
