@@ -2,10 +2,5 @@ image:
   file: .gitpod.Dockerfile
   
 tasks:
-  - name: Init env
-    init: pip install -r requirements.txt
-    command: ovhai login --username $OVH_OPENSTACK_USER --password $OVH_OPENSTACK_PASSWORD
-  - name: Run back-end
-    command: python3 nemo-back-api.py
-
-
+  - init: pip install -r requirements.txt
+    command: ovhai login --username $OVH_OPENSTACK_USER --password $OVH_OPENSTACK_PASSWORD && python3 nemo-back-api.py
