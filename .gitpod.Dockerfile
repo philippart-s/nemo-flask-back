@@ -1,4 +1,4 @@
-ARG GITPOD_IMAGE=gitpod/gitpod/workspace-python-3.8:latest
+ARG GITPOD_IMAGE=gitpod/workspace-python-3.8:latest
 FROM ${GITPOD_IMAGE}
 
 ## Update the packet cache
