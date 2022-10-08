@@ -6,6 +6,6 @@ image:
   
 tasks:
   - init: pip install -r requirements.txt
-    command: ovhai login --token $OVH_TOKEN
+    command: ovhai login --user $OVH_OPENSTACK_USER --password $OVH_OPENSTACK_PASSWORD
 
 
