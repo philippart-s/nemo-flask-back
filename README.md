@@ -33,10 +33,10 @@ Source code in Python using flask for the Nemo's back-end
 **⚠️ Always upload a sound before asking a prediction ⚠️**
 
   - upload a sound
-    - resource : _send-sound_
+    - resource: _send-sound_
     - _POST_ request
-    - payload : image in binary format
+    - payload: image in binary format
 
   - do a prediction
-    - resource : _get-animal-name_
+    - resource: _get-animal-name_
     - _GET_ request
