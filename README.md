@@ -3,19 +3,19 @@ Source code in Python using flask for the Nemo's back-end
 
 ## Requirements GitPod
 
-    - install libsndfile-dev : `sudo apt-get install libsndfile-dev`
-    - install requirements with pip : `pip install -r requirements.txt`
+    - install libsndfile-dev: `sudo apt-get install libsndfile-dev`
+    - install requirements with pip: `pip install -r requirements.txt`
 
 ## Requirements MacOs M1
 
-    - installation de libsndfile : `brew install libsndfile`
-    - add env variable : `export DYLD_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_LIBRARY_PATH"`
-    - installation de tensorflow : `pip install tensorflow-macos`
+    - installation de libsndfile: `brew install libsndfile`
+    - add env variable: `export DYLD_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_LIBRARY_PATH"`
+    - installation de tensorflow: `pip install tensorflow-macos`
 
 ## Docker
 
-    - build image : `docker build . -t wilda/nemo-back-end:1.1.0` or for Mac M1 `docker buildx build --platform linux/amd64 . -t wilda/nemo-back-end:1.1.0`
-    - run image : `docker run -p8080:8080 wilda/nemo-back-end:1.1.0`
+    - build image: `docker build . -t wilda/nemo-back-end:1.1.0` or for Mac M1 `docker buildx build --platform linux/amd64 . -t wilda/nemo-back-end:1.1.0`
+    - run image: `docker run -p8080:8080 wilda/nemo-back-end:1.1.0`
     
 ## OVHcloud :
   - list the container data storage that contain the trained model: 'ovhai data list GRA nemo-data'
