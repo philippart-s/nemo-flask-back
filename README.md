@@ -4,7 +4,7 @@ Source code in Python using flask for the Nemo's back-end
 ## Requirements GitPod
 
     - install libsndfile-dev : `sudo apt-get install libsndfile-dev`
-    - install requirements with pip : `pip install requirements.txt`
+    - install requirements with pip : `pip install -r requirements.txt`
 
 ## Requirements MacOs M1
 
