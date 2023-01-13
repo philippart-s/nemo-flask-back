@@ -64,7 +64,7 @@ PantropicalSpottedDolphin\nRibbonSeal\nRingedSeal\nRossSeal\nRough_ToothedDolphi
   converter = LabelEncoder()
   converter.fit_transform(df_labels.iloc[:,-1])
   
-  # Uniformize data thnaks to the initial data 🧹
+  # Uniformize data thanks to the initial data 🧹
   scaler = StandardScaler()
   df = pandas.read_csv(data_path + '/data.csv')
   scaler.fit(np.array(df.iloc[:, 1:27]))
