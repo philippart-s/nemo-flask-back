@@ -1,5 +1,5 @@
 # nemo-flask-back
-Source code in Python using flask for the Nemo's back-end
+Source code in Python using flask for the Nemo's back-end.
 
 ## Requirements GitPod
 
